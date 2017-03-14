@@ -113,11 +113,11 @@ card_defs = [
     },{
         #32
         "type": PAIR_CARD_TYPE,
-         "subtype": TACOCAT_CARD_SUBTYPE
+        "subtype": TACOCAT_CARD_SUBTYPE
     },{
         #33
         "type": PAIR_CARD_TYPE,
-       "subtype": TACOCAT_CARD_SUBTYPE
+        "subtype": TACOCAT_CARD_SUBTYPE
     },{
         #34
         "type": PAIR_CARD_TYPE,
@@ -186,8 +186,27 @@ card_defs = [
     }
 ]
 
+type_to_text = {
+    EXPLODINGKITTEN_CARD_TYPE: "Exploding Kitten",
+    PAIR_CARD_TYPE: "Pair",
+    SKIP_CARD_TYPE: "Skip",
+    NOPE_CARD_TYPE: "Nope",
+    DIFFUSE_CARD_TYPE: "Diffuse",
+    SHUFFLE_CARD_TYPE: "Shuffle",
+    UNKNOWN_CARD_TYPE: "Unknown",
+    ATTACK_CARD_TYPE: "Attack",
+    FAVOR_CARD_TYPE: "Favor",
+    SEETHEFUTURE_CARD_TYPE: "See The Future"
+}
+
+
 def get_card_definition(card_id):
     try:
         return card_defs[card_id]
     except:
         return UNKNOWN_CARD_DEFINITION
+
+
+def get_card_name(card_id):
+    card_def = get_card_definition(card_id)
+    return type_to_text[card_def["type"]]
