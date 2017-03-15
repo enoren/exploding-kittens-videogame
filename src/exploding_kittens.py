@@ -1,5 +1,7 @@
 import random
-from card_definitions import get_card_definition, EXPLODINGKITTEN_CARD_TYPE, get_card_name, DIFFUSE_CARD_TYPE
+from card_definitions import get_card_definition, EXPLODINGKITTEN_CARD_TYPE, get_card_name, DIFFUSE_CARD_TYPE, \
+    get_card_name_prompt, get_type_from_key
+from src.card_definitions import SHUFFLE_CARD_TYPE, UNKNOWN_CARD_TYPE
 
 card_deck = []
 
@@ -106,6 +108,12 @@ def draw_card(deck=None):
     return deck.pop(0)
 
 
+
+PLAYER_ACTION_MAP = {
+}
+
+
+
 def main():
     start_new_game()
 
@@ -114,9 +122,35 @@ def main():
 
     while not is_game_over():
         current_player_id = active_players[active_player_idx]
-        print "Current player is %s" % current_player_id
-        current_card = draw_card(card_deck)
         currentplayerhand = player_hands[current_player_id]
+        print "Current player is %s" % current_player_id
+        choice = None
+        while choice != "d":
+            # TODO allow for user action
+            choice = raw_input("Player %d - Specify action (<d>raw, <p>lay card): " % current_player_id)
+            choice = choice.lower().strip()
+
+            if choice == "p":
+                play_choice = None
+                while play_choice != "q":
+                    # Play card
+                    print "Player %d's current hand\n" % current_player_id
+                    print ", ".join([get_card_name_prompt(card_id) for card_id in currentplayerhand]) + "\n"
+                    play_choice = raw_input("Player %d - Specify Card to Play or <Q>uit: ")
+                    play_choice = play_choice.lower().strip()
+
+                    selected_card_type = get_type_from_key(play_choice)
+                    if selected_card_type != UNKNOWN_CARD_TYPE:
+                        selected_card, _ = pop_first_from_deck(currentplayerhand, selected_card_type)
+
+                        if selected_card_type == SHUFFLE_CARD_TYPE:
+                            # Do Shuffle
+                            shuffle_deck(card_deck)
+
+
+        # Only draw once player says to draw
+        current_card = draw_card(card_deck)
+
         print "Drew card = %s" % get_card_name(current_card)
         if get_card_definition(current_card)["type"] == EXPLODINGKITTEN_CARD_TYPE:
             print "Player got exploding kitten!"

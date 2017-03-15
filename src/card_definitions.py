@@ -199,6 +199,48 @@ type_to_text = {
     SEETHEFUTURE_CARD_TYPE: "See The Future"
 }
 
+type_to_keymap = {
+    EXPLODINGKITTEN_CARD_TYPE: {
+        "text": "<E>xploding Kitten",
+        "key": "e"
+    },
+    PAIR_CARD_TYPE: {
+        "text": "<P>air",
+        "key": "p"
+    },
+    SKIP_CARD_TYPE: {
+        "text": "<S>kip",
+        "key": "s"
+    },
+    NOPE_CARD_TYPE: {
+        "text": "<N>ope",
+        "key": "n"
+    },
+    DIFFUSE_CARD_TYPE: {
+        "text": "<D>iffuse",
+        "key": "d"
+    },
+    SHUFFLE_CARD_TYPE: {
+        "text": "S<h>uffle",
+        "key": "h"
+    },
+    UNKNOWN_CARD_TYPE: None,
+    ATTACK_CARD_TYPE: {
+        "text": "<A>ttack",
+        "key": "a"
+    },
+    FAVOR_CARD_TYPE: {
+        "text": "Fa<v>or",
+        "key": "v"
+    },
+    SEETHEFUTURE_CARD_TYPE: {
+        "text": "See The <F>uture",
+        "key": "f"
+    }
+}
+
+
+KEYMAP_TO_TYPE = {type_def["key"]: card_type for card_type, type_def in type_to_keymap.items() if type_def}
 
 def get_card_definition(card_id):
     try:
@@ -210,3 +252,13 @@ def get_card_definition(card_id):
 def get_card_name(card_id):
     card_def = get_card_definition(card_id)
     return type_to_text[card_def["type"]]
+
+def get_type_from_key(key):
+    try:
+        return KEYMAP_TO_TYPE[key]
+    except KeyError:
+        return UNKNOWN_CARD_TYPE
+
+def get_card_name_prompt(card_id):
+    card_def = get_card_definition(card_id)
+    return type_to_keymap[card_def["type"]]["text"]
