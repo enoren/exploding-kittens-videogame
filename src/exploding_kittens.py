@@ -75,7 +75,8 @@ def deal():
     # All players need to start out with a diffuse
     for player_id in range(NUMBER_OF_PLAYERS):
         player_hand = player_hands[player_id]
-        player_hand.append(pop_first_from_deck(card_deck, DIFFUSE_CARD_TYPE))
+        card_id, _ = pop_first_from_deck(card_deck, DIFFUSE_CARD_TYPE)
+        player_hand.append(card_id)
 
 
 
@@ -120,11 +121,12 @@ def main():
         if get_card_definition(current_card)["type"] == EXPLODINGKITTEN_CARD_TYPE:
             print "Player got exploding kitten!"
             try:
-                card_id, card_idx = pop_first_from_deck(card_deck, DIFFUSE_CARD_TYPE)
+                card_id, card_idx = pop_first_from_deck(currentplayerhand, DIFFUSE_CARD_TYPE)
                 active_player_idx += 1
                 print "the exploding kitten was nullified!"
                 insert_card_into_deck(card_deck, current_card)
             except IndexError:
+                print "No diffuse card, so player exploded"
                 active_players.pop(active_player_idx)
         else:
             currentplayerhand.append(current_card)
