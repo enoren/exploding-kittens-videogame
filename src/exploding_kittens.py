@@ -100,19 +100,27 @@ def main():
         current_player_id = active_players[active_player_idx]
         print "Current player is %s" % current_player_id
         current_card = draw_card(card_deck)
+        currentplayerhand = player_hands[current_player_id]
         print "Drew card = %s" % get_card_name(current_card)
         if get_card_definition(current_card)["type"] == EXPLODINGKITTEN_CARD_TYPE:
             print "Player got exploding kitten!"
-            active_players.pop(active_player_idx)
-            currentplayerhand = player_hands[current_player_id]
+            is_player_exploded = True
             for playercard_idx in range(len(currentplayerhand)):
                 playercard_id = currentplayerhand[playercard_idx]
                 cardtype = get_card_definition(playercard_id)["type"]
                 if cardtype == DIFFUSE_CARD_TYPE:
                     currentplayerhand.pop(playercard_idx)
-                    insert_card_into_deck(card_deck)
-            # Dont increment the active_player_idx since we just removed one from the list
+                    insert_card_into_deck(card_deck, current_card)
+                    print "the exploding kitten was nullified!"
+                    is_player_exploded = False
+                    break  # Break out of the for loop since we found our diffuse card
+            if is_player_exploded:
+                active_players.pop(active_player_idx)
+                # Dont increment the active_player_idx since we just removed one from the list
+            else:
+                active_player_idx += 1
         else:
+            currentplayerhand.append(current_card)
             active_player_idx += 1
 
         if active_player_idx >= len(active_players):
