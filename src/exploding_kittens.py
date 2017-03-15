@@ -38,20 +38,29 @@ def insert_card_into_deck(deck, card_id, location=None):
     return deck
 
 
+def pop_first_from_deck(deck, card_type):
+    for idx in range(len(deck)):
+        card_id = deck[idx]
+        cardtype = get_card_definition(card_id)["type"]
+        if cardtype == card_type:
+            return deck.pop(idx), idx
+    raise IndexError("Card of type %s not found in deck" % str(card_type))
+
+
 def deal():
-    print "Dealing..."  
-    CARDS_PER_PLAYER = 4
-    # TODO deal cards to players
+    print "Dealing..."
+    NUMBER_OF_PLAYERS = 2
+    CARDS_PER_PLAYER = 3
     global player_hands
     global active_players
 
     player_hands = []
     player_hands.append([])
     player_hands.append([])
-    active_players = range(2)
+    active_players = range(NUMBER_OF_PLAYERS)
 
     for x in range(CARDS_PER_PLAYER):
-        for player_id in range(2):
+        for player_id in range(NUMBER_OF_PLAYERS):
             player_hand = player_hands[player_id]
             current_card = None
             while current_card is None:
@@ -62,6 +71,12 @@ def deal():
                     current_card = None
 
             player_hand.append(current_card)
+
+    # All players need to start out with a diffuse
+    for player_id in range(NUMBER_OF_PLAYERS):
+        player_hand = player_hands[player_id]
+        player_hand.append(pop_first_from_deck(card_deck, DIFFUSE_CARD_TYPE))
+
 
 
 def start_new_game():
@@ -104,21 +119,13 @@ def main():
         print "Drew card = %s" % get_card_name(current_card)
         if get_card_definition(current_card)["type"] == EXPLODINGKITTEN_CARD_TYPE:
             print "Player got exploding kitten!"
-            is_player_exploded = True
-            for playercard_idx in range(len(currentplayerhand)):
-                playercard_id = currentplayerhand[playercard_idx]
-                cardtype = get_card_definition(playercard_id)["type"]
-                if cardtype == DIFFUSE_CARD_TYPE:
-                    currentplayerhand.pop(playercard_idx)
-                    insert_card_into_deck(card_deck, current_card)
-                    print "the exploding kitten was nullified!"
-                    is_player_exploded = False
-                    break  # Break out of the for loop since we found our diffuse card
-            if is_player_exploded:
-                active_players.pop(active_player_idx)
-                # Dont increment the active_player_idx since we just removed one from the list
-            else:
+            try:
+                card_id, card_idx = pop_first_from_deck(card_deck, DIFFUSE_CARD_TYPE)
                 active_player_idx += 1
+                print "the exploding kitten was nullified!"
+                insert_card_into_deck(card_deck, current_card)
+            except IndexError:
+                active_players.pop(active_player_idx)
         else:
             currentplayerhand.append(current_card)
             active_player_idx += 1
@@ -127,7 +134,7 @@ def main():
             active_player_idx = 0
 
     # TODO who won?
-    print "Game Over"
+    print "Game Over - Player %s is the winner" % str(active_players[0])
 
 if __name__ == "__main__":
     main()
