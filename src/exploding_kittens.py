@@ -27,13 +27,13 @@ def shuffle_deck(deck):
     random.shuffle(deck)
 
 
-def insert_card_into_deck(deck, location=None):
+def insert_card_into_deck(deck, card_id, location=None):
     if location is None:
         # Randomally assign index
         location = random.randint(0, len(deck))
 
     assert isinstance(deck, list)
-    deck.insert(location, deck)
+    deck.insert(location, card_id)
 
     return deck
 
@@ -58,7 +58,7 @@ def deal():
                 current_card = draw_card(card_deck)
                 if get_card_definition(current_card)["type"] == EXPLODINGKITTEN_CARD_TYPE:
                     # Need to redraw as we can't have this
-                    insert_card_into_deck(card_deck)
+                    insert_card_into_deck(card_deck, current_card)
                     current_card = None
 
             player_hand.append(current_card)
