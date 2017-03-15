@@ -1,5 +1,5 @@
 import random
-from card_definitions import get_card_definition, EXPLODINGKITTEN_CARD_TYPE, get_card_name
+from card_definitions import get_card_definition, EXPLODINGKITTEN_CARD_TYPE, get_card_name, DIFFUSE_CARD_TYPE
 
 card_deck = []
 
@@ -102,8 +102,15 @@ def main():
         current_card = draw_card(card_deck)
         print "Drew card = %s" % get_card_name(current_card)
         if get_card_definition(current_card)["type"] == EXPLODINGKITTEN_CARD_TYPE:
-            print "Player got exploding kitten"
+            print "Player got exploding kitten!"
             active_players.pop(active_player_idx)
+            currentplayerhand = player_hands[current_player_id]
+            for playercard_idx in range(len(currentplayerhand)):
+                playercard_id = currentplayerhand[playercard_idx]
+                cardtype = get_card_definition(playercard_id)["type"]
+                if cardtype == DIFFUSE_CARD_TYPE:
+                    currentplayerhand.pop(playercard_idx)
+                    insert_card_into_deck(card_deck)
             # Dont increment the active_player_idx since we just removed one from the list
         else:
             active_player_idx += 1
