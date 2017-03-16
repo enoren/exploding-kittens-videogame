@@ -1,7 +1,7 @@
 import random
 from card_definitions import get_card_definition, EXPLODINGKITTEN_CARD_TYPE, get_card_name, DIFFUSE_CARD_TYPE, \
     get_card_name_prompt, get_type_from_key
-from src.card_definitions import SHUFFLE_CARD_TYPE, UNKNOWN_CARD_TYPE
+from src.card_definitions import SHUFFLE_CARD_TYPE, UNKNOWN_CARD_TYPE, SKIP_CARD_TYPE
 
 card_deck = []
 
@@ -82,6 +82,7 @@ def deal():
 
 
 
+
 def start_new_game():
     create_deck()
     shuffle_deck(card_deck)
@@ -125,14 +126,15 @@ def main():
         currentplayerhand = player_hands[current_player_id]
         print "Current player is %s" % current_player_id
         choice = None
-        while choice != "d":
+        its_still_my_turn = True
+        while choice != "d" and its_still_my_turn:
             # TODO allow for user action
             choice = raw_input("Player %d - Specify action (<d>raw, <p>lay card): " % current_player_id)
             choice = choice.lower().strip()
 
             if choice == "p":
                 play_choice = None
-                while play_choice != "q":
+                while play_choice != "q" and its_still_my_turn:
                     # Play card
                     print "Player %d's current hand\n" % current_player_id
                     print ", ".join([get_card_name_prompt(card_id) for card_id in currentplayerhand]) + "\n"
@@ -146,32 +148,97 @@ def main():
                         if selected_card_type == SHUFFLE_CARD_TYPE:
                             # Do Shuffle
                             shuffle_deck(card_deck)
-
+                            print "the deck was shuffled!"
+                        elif selected_card_type == SKIP_CARD_TYPE:
+                           if active_player_idx == 0:
+                             active_player_idx += 1
+                             its_still_my_turn = False
+                             print "Skip!"
+                           else:
+                               active_player_idx = 0
+                               its_still_my_turn = False
+                               print "Skip!"
 
         # Only draw once player says to draw
-        current_card = draw_card(card_deck)
+        if choice == "d":
+           current_card = draw_card(card_deck)
 
-        print "Drew card = %s" % get_card_name(current_card)
-        if get_card_definition(current_card)["type"] == EXPLODINGKITTEN_CARD_TYPE:
-            print "Player got exploding kitten!"
-            try:
-                card_id, card_idx = pop_first_from_deck(currentplayerhand, DIFFUSE_CARD_TYPE)
-                active_player_idx += 1
-                print "the exploding kitten was nullified!"
-                insert_card_into_deck(card_deck, current_card)
-            except IndexError:
-                print "No diffuse card, so player exploded"
-                active_players.pop(active_player_idx)
-        else:
-            currentplayerhand.append(current_card)
-            active_player_idx += 1
+           print "Drew card = %s" % get_card_name(current_card)
+           if get_card_definition(current_card)["type"] == EXPLODINGKITTEN_CARD_TYPE:
+               print "Player got exploding kitten!"
+               try:
+                   card_id, card_idx = pop_first_from_deck(currentplayerhand, DIFFUSE_CARD_TYPE)
+                   active_player_idx += 1
+                   print "the exploding kitten was nullified!"
+                   insert_card_into_deck(card_deck, current_card)
+               except IndexError:
+                   print "No diffuse card, so player exploded. KA-BOOM!"
+                   active_players.pop(active_player_idx)
+           else:
+               currentplayerhand.append(current_card)
+               active_player_idx += 1
 
-        if active_player_idx >= len(active_players):
-            active_player_idx = 0
+           if active_player_idx >= len(active_players):
+               active_player_idx = 0
 
     # TODO who won?
-    print "Game Over - Player %s is the winner" % str(active_players[0])
+    print "Game Over - Player %s is the winner and you are covered in awesome sauce (while the other is in loser sauce)" % str(active_players[0])
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Th3 n0r3n fami1y studi0s pr3s3nts...
+
+
+                                # ...A v3ry fun gam3...
+
+
+                                              # ...Mad3 by a Kickstart3r...
+
+
+
+
+                                                                   #...(N0, N0t us)...
+
+
+                                                                                         #W3 n0w sh0w y0u 3xp10ding Kitt3ns th3 Vid30 gam3!
+
+
+
+
+                                 #With Cats, Las3rs, G0ats, And S0m3 good Aw3s0m3 sauc3!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
