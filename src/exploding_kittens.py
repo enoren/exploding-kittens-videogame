@@ -2,7 +2,8 @@ import random
 from card_definitions import get_card_definition, EXPLODINGKITTEN_CARD_TYPE, get_card_name, DIFFUSE_CARD_TYPE, \
     get_card_name_prompt, get_type_from_key
 from src.card_definitions import SHUFFLE_CARD_TYPE, UNKNOWN_CARD_TYPE, SKIP_CARD_TYPE
-
+from card_definitions import get_card_definition, SEETHEFUTURE_CARD_TYPE, get_card_name, SEETHEFUTURE_CARD_TYPE, \
+    get_card_name_prompt, get_type_from_key
 card_deck = []
 
 player_hands = []
@@ -158,7 +159,12 @@ def main():
                                active_player_idx = 0
                                its_still_my_turn = False
                                print "Skip!"
-
+                        elif selected_card_type == SEETHEFUTURE_CARD_TYPE:
+                            print "The next 3 cards are... "
+                            See = card_deck[0]
+                            The = card_deck[1]
+                            Future = card_deck[2]
+                            print "cards = " + get_card_name(See) + " " + get_card_name(The)  + " " + get_card_name(Future)
         # Only draw once player says to draw
         if choice == "d":
            current_card = draw_card(card_deck)
@@ -182,7 +188,7 @@ def main():
                active_player_idx = 0
 
     # TODO who won?
-    print "Game Over - Player %s is the winner and you are covered in awesome sauce (while the other is in loser sauce)" % str(active_players[0])
+    print "Game Over - Player %s is the winner and Player %s are covered in awesome sauce (while the other is in loser sauce)" % str(active_players[0])
 
 if __name__ == "__main__":
     main()
